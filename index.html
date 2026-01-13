@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html style="background: #121212;">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BizyAir - Photoshop UI</title>
+    <!-- CRITICAL: Immediate style injection to prevent white flash -->
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #2b2b2b !important;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #2b2b2b;
+            z-index: 9999;
+            color: #999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            visibility: visible;
+        }
+
+        .loader {
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            border-top-color: #00a0ff;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        webview {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            visibility: hidden;
+            background: #121212;
+        }
+
+        webview.ready {
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="splash">
+        <div class="loader"></div>
+        <div style="font-size: 13px; opacity: 0.8;">BizyAir Initializing...</div>
+    </div>
+
+    <!-- Webview remains backgrounded until content ready -->
+    <webview id="biz_wv" enablemessagebridge="yes" allowlocalrendering="yes"></webview>
+
+    <!-- Scripts at the bottom to avoid blocking render -->
+    <script src="photoshop.js"></script>
+    <script>
+        (function () {
+            const webview = document.getElementById('biz_wv');
+            const splash = document.getElementById('splash');
+            const STORAGE_FILE = 'bizyair_core_v64.json';
+            const uxp = require('uxp');
+            const fs = uxp.storage.localFileSystem;
+            let _cache = { bizyair_apiKey: '', bizyair_accounts: [], bizyair_apps_v2: [], bizyair_apps_v2_private: [], bizyair_public_apps: [] };
+
+            const hideSplash = () => {
+                if (splash && splash.style.display !== 'none') {
+                    splash.style.display = 'none';
+                    webview.classList.add('ready');
+                    console.log("BizyAir: Boot Complete");
+                }
+            };
+
+            // Double security for hiding splash
+            webview.addEventListener('loadstop', hideSplash);
+            setTimeout(hideSplash, 10000); // Wait longer for complex setups
+
+            const processSignal = async (raw) => {
+                if (!raw) return;
+
+                // 1. Storage Save Logic
+                if (typeof raw === 'string' && raw.includes('#SAVE:')) {
+                    try {
+                        let jsonPart = decodeURIComponent(raw.split('#SAVE:')[1]);
+                        const lastBracket = jsonPart.lastIndexOf('}');
+                        if (lastBracket !== -1) jsonPart = jsonPart.substring(0, lastBracket + 1);
+                        const data = JSON.parse(jsonPart);
+
+                        _cache = { ..._cache, ...data };
+                        localStorage.setItem('bizyair_v75_ls', JSON.stringify(_cache));
+                        const df = await fs.getDataFolder();
+                        const file = await df.createFile(STORAGE_FILE, { overwrite: true });
+                        await file.write(JSON.stringify(_cache));
+                    } catch (e) { console.error("Save error:", e); }
+                }
+                // 2. Handshake Logic
+                else if (typeof raw === 'string' && raw.includes('READY')) {
+                    webview.postMessage({ type: 'BIZYAIR_INIT_DATA', data: _cache }, "*");
+                    hideSplash();
+                }
+                // 3. RPC Logic
+                else if (typeof raw === 'string' && raw.includes('BIZYAIR_STR:')) {
+                    const match = raw.match(/\{.*\}/);
+                    if (match) {
+                        let requestId = null;
+                        try {
+                            const jsonStr = match[0];
+                            const cleanJson = (str) => {
+                                try { return JSON.parse(str); } catch (e) {
+                                    // Handle UXP Backslash Escaping Quirk
+                                    if (str.includes('\\')) {
+                                        const unescaped = str.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                                        return JSON.parse(unescaped);
+                                    }
+                                    throw e;
+                                }
+                            };
+
+                            const payload = cleanJson(jsonStr);
+                            requestId = payload.id;
+                            let result = null;
+
+                            if (payload.method === 'photoshop:call' && window.photoshopAPI && window.photoshopAPI[payload.params[0]]) {
+                                result = await window.photoshopAPI[payload.params[0]](... (payload.params[1] || []));
+                            } else {
+                                throw new Error(`Method ${payload.method} or API not found`);
+                            }
+                            webview.postMessage({ id: requestId, result }, "*");
+                        } catch (e) {
+                            console.error("RPC Error:", e, match[0]);
+                            if (requestId) {
+                                webview.postMessage({ id: requestId, result: { success: false, error: e.message } }, "*");
+                            }
+                        }
+                    }
+                }
+            };
+
+            webview.addEventListener('message', (e) => processSignal(e.data || e.message));
+            webview.addEventListener('ipc-message', (e) => processSignal(e.channel));
+
+            setInterval(() => {
+                const title = webview.title;
+                if (title && title.includes('BIZYAIR_')) {
+                    processSignal(title.replace('BIZYAIR_SIGNAL_RPC:', 'BIZYAIR_STR:').replace('BIZYAIR_SIGNAL:', '#'));
+                }
+            }, 100);
+
+            async function init() {
+                // 1. Load Data FIRST
+                try {
+                    const ls = localStorage.getItem('bizyair_v75_ls');
+                    if (ls) _cache = JSON.parse(ls);
+                    else {
+                        const df = await fs.getDataFolder();
+                        const entry = await df.getEntry(STORAGE_FILE);
+                        const raw = await entry.read();
+                        if (raw) _cache = JSON.parse(raw);
+                    }
+                } catch (e) { console.warn("Init load failed:", e); }
+
+                // 2. Point to UI (CLEAN URL - No hash to prevent Windows load hangs)
+                webview.src = `webview/ui.html`;
+            }
+
+            init();
+        })();
+    </script>
+</body>
+
+</html>

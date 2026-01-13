@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# UXP & Node
+node_modules/
+dist/
+*.log
+
+# Backups
+*.zip
+*.rar
+*.bak
+
+# Project Specific (Local/Dev assets to ignore in Cloud version)
+uxp_cors_patch.py
+*.sh

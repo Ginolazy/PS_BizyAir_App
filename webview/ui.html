@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>CC-BizyAirApp - Webview UI</title>
+    <link rel="stylesheet" crossorigin href="main.css">
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
+    <script>
+        (function () {
+            const pendingRequests = new Map();
+            let requestIdCounter = 0;
+
+            const onMessage = (event) => {
+                const rpcRes = event.data || (event.detail && event.detail.data);
+                if (!rpcRes || !rpcRes.id) return;
+                const { id, result, error } = rpcRes;
+                if (pendingRequests.has(id)) {
+                    const { resolve, reject } = pendingRequests.get(id);
+                    pendingRequests.delete(id);
+                    if (error) reject(new Error(error)); else resolve(result);
+                }
+            };
+
+            window.addEventListener('message', onMessage);
+
+            async function callHost(method, ...params) {
+                return new Promise((resolve, reject) => {
+                    const id = `rpc_${Date.now()}_${++requestIdCounter}`;
+                    const timeout = setTimeout(() => {
+                        if (pendingRequests.has(id)) {
+                            pendingRequests.delete(id);
+                            resolve(null);
+                        }
+                    }, 4000);
+
+                    pendingRequests.set(id, {
+                        resolve: (r) => { clearTimeout(timeout); resolve(r); },
+                        reject: (e) => { clearTimeout(timeout); reject(e); }
+                    });
+
+                    // RPC: Bridge via string payload for compatibility
+                    const payload = JSON.stringify({ id, method, params });
+                    const stringPayload = `BIZYAIR_STR:${payload}`;
+
+                    try {
+                        if (window.chrome && window.chrome.webview) {
+                            window.chrome.webview.postMessage(stringPayload);
+                        }
+                        if (window.uxpHost) {
+                            window.uxpHost.postMessage(stringPayload);
+                        }
+                    } catch (e) {
+                        console.error("Bridge dispatch failed:", e);
+                    }
+                });
+            }
+
+            window.photoshopAPI = {
+                getItem: (key) => callHost('storage:get', key),
+                setItem: (key, value) => callHost('storage:set', key, value),
+                getActiveDocumentImage: (opt) => callHost('photoshop:call', 'getActiveDocumentImage', opt),
+                placeImageToLayer: (buffer) => callHost('photoshop:call', 'placeImageToLayer', buffer),
+                createDocFromBuffer: (buffer) => callHost('photoshop:call', 'createDocFromBuffer', buffer),
+                createLayerFromBuffer: (buffer) => callHost('photoshop:call', 'createLayerFromBuffer', buffer),
+                getDocumentInfo: () => callHost('photoshop:call', 'getDocumentInfo'),
+                showAlert: (msg) => callHost('photoshop:call', 'showAlert', msg)
+            };
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- SVG Icon System: Decoupled from JS for stability -->
+    <svg style="display: none;">
+        <symbol id="icon-sync" viewBox="0 0 24 24">
+            <path d="M23 4v6h-6" />
+            <path d="M1 20v-6h6" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-x" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-trash" viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-history" viewBox="0 0 24 24">
+            <path d="M1 4v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-grid" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-prev" viewBox="0 0 24 24">
+            <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-next" viewBox="0 0 24 24">
+            <path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-apply-layer" viewBox="0 0 24 24">
+            <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-new-doc" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-stop" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-up" viewBox="0 0 24 24">
+            <path d="M18 15l-6-6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-broom" viewBox="0 0 24 24">
+            <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="icon-community" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+        </symbol>
+        <symbol id="icon-private" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></circle>
+        </symbol>
+        <symbol id="icon-refresh" viewBox="0 0 24 24">
+            <path d="M23 4v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+        </symbol>
+        <symbol id="icon-settings" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+            <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+    </svg>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="brand">
+                <img src="../icons/icon.png" class="logo-icon" alt="BizyAir">
+                <span class="logo" id="logoText">BizyAir</span>
+            </div>
+            <div class="nav-links">
+                <button class="icon-btn" id="navAccountBtn" title="Settings">
+                    <svg class="icon-tw-18">
+                        <use xlink:href="#icon-settings" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 1. Account Management Section -->
+        <section class="account-section" id="accountSection" style="display: none;">
+            <div class="section-header">
+                <h2>Account Settings</h2>
+                <button class="icon-btn" id="accountBackBtn">
+                    <svg class="icon-tw-14">
+                        <use xlink:href="#icon-x" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="inline-form">
+                    <input type="password" id="apiKeyInput" class="input-control" placeholder="Enter API Key...">
+                    <button class="action-btn primary" id="connectBtn">Add</button>
+                </div>
+            </div>
+
+            <div id="manageAccountsList"></div>
+
+            <div class="card-header-row mt-10">
+                <h3 class="m-0">App Management</h3>
+                <button class="icon-btn" id="syncAppsBtn" title="Sync my apps from server">
+                    <svg class="icon-tw-14">
+                        <use xlink:href="#icon-sync" />
+                    </svg>
+                </button>
+            </div>
+            <div id="savedAppsList"></div>
+        </section>
+
+        <!-- 2. Home App List View -->
+        <section class="app-list-section" id="appListSection" style="display: none;">
+            <div class="card">
+                <div class="card-header-row">
+                    <h3>App List</h3>
+                </div>
+                <div id="appListContent"></div>
+            </div>
+        </section>
+
+        <!-- 3. Execution View -->
+        <section class="execution-section" id="executionSection" style="display: none;">
+            <div class="section-header">
+                <div class="header-flex-container">
+                    <h5 id="currentAppName" class="m-0">App Name</h5>
+                    <div class="header-actions">
+                        <button class="icon-btn" id="deleteCurrentResultBtn" style="display: none;"
+                            title="Delete Current Result">
+                            <svg class="icon-tw-14">
+                                <use xlink:href="#icon-trash" />
+                            </svg>
+                        </button>
+                        <button class="icon-btn" id="deleteAllResultsBtn" style="display: none;"
+                            title="Clear All History">
+                            <svg class="icon-tw-14">
+                                <use xlink:href="#icon-broom" />
+                            </svg>
+                        </button>
+                        <button class="icon-btn history-btn-styled" id="showHistoryBtn" title="Load history">
+                            <svg class="icon-tw-15">
+                                <use xlink:href="#icon-history" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button class="icon-btn" id="backToAppsBtn" title="Back to App List">
+                    <svg class="icon-tw-15">
+                        <use xlink:href="#icon-grid" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="execution-content-scroll">
+                <!-- Result Preview with Carousel -->
+                <div id="resultStickySection" class="result-preview-area card d-none" style="display: none;">
+                    <div class="result-image-container">
+                        <button class="icon-btn pos-absolute-top-right z-10" id="closePreviewBtn">
+                            <svg class="icon-tw-14">
+                                <use xlink:href="#icon-x" />
+                            </svg>
+                        </button>
+
+                        <!-- Navigation Buttons -->
+                        <button class="carousel-nav prev" id="prevResultBtn">
+                            <svg class="icon-tw-20">
+                                <use xlink:href="#icon-prev" />
+                            </svg>
+                        </button>
+
+                        <img id="resultPreviewImg" src="" />
+
+                        <button class="carousel-nav next" id="nextResultBtn">
+                            <svg class="icon-tw-20">
+                                <use xlink:href="#icon-next" />
+                            </svg>
+                        </button>
+
+                        <!-- Page Indicator -->
+                        <div class="carousel-indicator" id="carouselIndicator">1 / 1</div>
+                        <div class="result-placeholder">Result</div>
+                        <div class="result-actions-floating">
+                            <div class="result-button-bridge">
+                                <button class="control-btn" id="applyResultBtn" title="Apply to layer">
+                                    <svg class="icon-tw-12">
+                                        <use xlink:href="#icon-apply-layer" />
+                                    </svg>
+                                    Apply to Layer
+                                </button>
+                                <button class="control-btn" id="createDocBtn" title="New document">
+                                    <svg class="icon-tw-12">
+                                        <use xlink:href="#icon-new-doc" />
+                                    </svg>
+                                    New Document
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="params-container card">
+                    <div id="appParamsContent"></div>
+                </div>
+            </div>
+
+            <!-- Progress & Logs -->
+
+            <footer class="footer execution-footer">
+                <div class="log-drawer" id="logDrawer">
+                    <div class="log-content-wrapper">
+                        <div class="log-content" id="logContent"></div>
+                    </div>
+                    <div class="log-drawer-header" id="logDrawerHeader" title="Click to toggle logs">
+                        <button class="icon-btn mr-8" id="clearLogsBtn" title="Clear Logs">
+                            <svg class="icon-tw-14">
+                                <use xlink:href="#icon-trash" />
+                            </svg>
+                        </button>
+                        <div id="logDrawerChevron">
+                            <svg class="icon-tw-12">
+                                <use xlink:href="#icon-up" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-actions">
+                    <button class="run-btn primary" id="runBtn">Generate Now</button>
+                    <button class="stop-btn secondary d-none" id="stopBtn" title="Stop Task" style="display: none;">
+                        <svg class="icon-tw-18">
+                            <use xlink:href="#icon-stop" />
+                        </svg>
+                    </button>
+                </div>
+            </footer>
+        </section>
+
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/logic.js"></script>
+</body>
+
+</html>
