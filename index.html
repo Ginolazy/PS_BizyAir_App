@@ -184,9 +184,26 @@
                     else {
                         const df = await fs.getDataFolder();
                         const entry = await df.getEntry(STORAGE_FILE);
-                        const raw = await entry.read();
-                        if (raw) _cache = JSON.parse(raw);
+                        if (entry) {
+                            const raw = await entry.read();
+                            if (raw) _cache = JSON.parse(raw);
+                        }
                     }
+
+                    // 1.5 Load Default Apps from Bundle (New)
+                    try {
+                        const pf = await fs.getPluginFolder();
+                        const pubEntry = await pf.getEntry('webview/public_apps.json');
+                        if (pubEntry) {
+                            const pubRaw = await pubEntry.read();
+                            if (pubRaw) {
+                                const pubData = JSON.parse(pubRaw);
+                                _cache.bizyair_bundle_defaults = pubData.default_apps || [];
+                                console.log("BizyAir: Loaded Bundle Defaults", _cache.bizyair_bundle_defaults);
+                            }
+                        }
+                    } catch (e) { console.warn("Bundle Defaults load skipped:", e); }
+
                 } catch (e) { console.warn("Init load failed:", e); }
 
                 // 2. Point to UI (CLEAN URL - No hash to prevent Windows load hangs)

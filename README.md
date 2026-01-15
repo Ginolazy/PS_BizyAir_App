@@ -15,8 +15,9 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
 - **Cloud Acceleration**: Connects seamlessly with BizyAir.cn's high-performance model clusters. No complex local setup required; enjoy low-latency, high-quality AI generation.
 - **Smart Account & App Management**:
   - **Multi-Account Support**: Save and switch between multiple API keys to manage different quotas easily.
+  - **Out-of-the-Box Experience**: Automatically pre-loads a set of high-quality default apps on first installation (configured via `public_apps.json`).
   - **Auto Private App Sync**: Automatically retrieves all your private workflows (Private Apps) upon login.
-  - **Community App Discovery**: Add high-quality public workflows to your panel simply by entering their App ID. (https://bizyair.cn/community?path=app)
+  - **Community App Discovery**: Add public workflows via App ID, or manually append default apps from settings. (https://bizyair.cn/community?path=app)
 - **Enhanced Canvas Interaction**:
   - **Real-time Sync**: Automatically responds to layer visibility, selection, movement, and transformations within Photoshop.
   - **Preview Lock**: Added a "Lock" button to LoadImage nodes, allowing you to freeze previews and manage multiple reference images independently.
@@ -47,8 +48,9 @@ PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通
   - 完美对接 BizyAir.cn 高性能模型群，免去本地环境配置的烦恼，实现低延迟、高画质的 AI 运算。
 - **智能账号与 App 管理**：
   - **多账号支持**：支持保存与一键切换多个 API 账号，轻松管理不同配额。
-  - **私人 App 自动同步**：登录后自动获取您的所有私有工作流（Private Apps），即开即用。
-  - **社区 App 发现**：只需手动输入社区 App ID，即可将公开的高质量工作流添加至您的控制面板。(https://bizyair.cn/community?path=app)
+  - **开箱即用体验**：首次安装时自动预载一组高质量默认 App，无需配置即可上手。
+  - **私人 App 自动同步**：登录后自动获取您的所有私有Apps（Private Apps），同步个人资产。
+  - **社区 App 扩展**：支持输入 App ID 扩展，或在设置中随时手动追加预设默认 App。(https://bizyair.cn/community?path=app)
 - **深度画布联动**：
   - **实时同步**：自动感应 Photoshop 内部的图层显隐、切换、移动及变形操作，实现无缝预览。
   - **预览锁定**：LoadImage 节点支持“锁定”功能，您可以冻结特定节点的图像内容，方便多节点协同工作。

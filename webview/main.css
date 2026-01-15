@@ -248,9 +248,10 @@ svg.icon-tw-20 {
     background-color: var(--accent-success);
 }
 
-.list-item.active {
-    background: var(--bg-active);
-    border: 1px solid rgba(13, 153, 255, 0.2);
+.header-flex-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
 }
 
 .list-item:hover {

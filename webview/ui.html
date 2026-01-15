@@ -229,11 +229,18 @@
 
             <div class="card-header-row mt-10">
                 <h3 class="m-0">App Management</h3>
-                <button class="icon-btn" id="syncAppsBtn" title="Sync my apps from server">
-                    <svg class="icon-tw-14">
-                        <use xlink:href="#icon-sync" />
-                    </svg>
-                </button>
+                <div class="header-flex-row">
+                    <button class="icon-btn" id="loadDefaultAppsBtn" title="Load default apps">
+                        <svg class="icon-tw-14">
+                            <use xlink:href="#icon-community" />
+                        </svg>
+                    </button>
+                    <button class="icon-btn" id="syncAppsBtn" title="Sync my apps from server">
+                        <svg class="icon-tw-14">
+                            <use xlink:href="#icon-sync" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div id="savedAppsList"></div>
         </section>
