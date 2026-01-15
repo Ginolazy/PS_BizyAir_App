@@ -73,7 +73,7 @@
     <webview id="biz_wv" enablemessagebridge="yes" allowlocalrendering="yes"></webview>
 
     <!-- Scripts at the bottom to avoid blocking render -->
-    <script src="photoshop.js"></script>
+    <script src="utils/photoshop.js"></script>
     <script>
         (function () {
             const webview = document.getElementById('biz_wv');
@@ -141,7 +141,17 @@
                             let result = null;
 
                             if (payload.method === 'photoshop:call' && window.photoshopAPI && window.photoshopAPI[payload.params[0]]) {
-                                result = await window.photoshopAPI[payload.params[0]](... (payload.params[1] || []));
+                                let methodArgs = payload.params.slice(1);
+                                // Deep unpack: logic.js wraps args in [args], which might be [[opts]]
+                                while (methodArgs.length === 1 && Array.isArray(methodArgs[0])) {
+                                    methodArgs = methodArgs[0];
+                                }
+                                result = await window.photoshopAPI[payload.params[0]](...methodArgs);
+                            } else if (payload.method === 'storage:get') {
+                                result = _cache[payload.params[0]];
+                            } else if (payload.method === 'storage:set') {
+                                _cache[payload.params[0]] = payload.params[1];
+                                result = { success: true };
                             } else {
                                 throw new Error(`Method ${payload.method} or API not found`);
                             }
@@ -181,6 +191,12 @@
 
                 // 2. Point to UI (CLEAN URL - No hash to prevent Windows load hangs)
                 webview.src = `webview/ui.html`;
+                // 3. Start Listeners
+                if (window.photoshopAPI && window.photoshopAPI.startSelectionListener) {
+                    window.photoshopAPI.startSelectionListener(() => {
+                        webview.postMessage({ type: 'PS_SELECTION_CHANGED' }, "*");
+                    });
+                }
             }
 
             init();

@@ -8,19 +8,20 @@
 
 ## English - User Guide
 
-PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. By integrating BizyAir's high-performance cloud node services, it allows you to unleash the full potential of AI generation directly within PS without consuming local GPU resources.
+PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. By integrating BizyAir.cn's high-performance cloud node services, it allows you to unleash the full potential of AI generation directly within PS without consuming local GPU resources.
 
 ### 🌟 Key Features
 
-- **Cloud Acceleration**: Connects seamlessly with BizyAir's high-performance model clusters. No complex local setup required; enjoy low-latency, high-quality AI generation.
+- **Cloud Acceleration**: Connects seamlessly with BizyAir.cn's high-performance model clusters. No complex local setup required; enjoy low-latency, high-quality AI generation.
 - **Smart Account & App Management**:
   - **Multi-Account Support**: Save and switch between multiple API keys to manage different quotas easily.
   - **Auto Private App Sync**: Automatically retrieves all your private workflows (Private Apps) upon login.
-  - **Community App Discovery**: Add high-quality public workflows to your panel simply by entering their App ID.
-- **Deep Canvas Integration**:
-  - Use PS selections or active layers as AI inputs.
+  - **Community App Discovery**: Add high-quality public workflows to your panel simply by entering their App ID. (https://bizyair.cn/community?path=app)
+- **Enhanced Canvas Interaction**:
+  - **Real-time Sync**: Automatically responds to layer visibility, selection, movement, and transformations within Photoshop.
+  - **Preview Lock**: Added a "Lock" button to LoadImage nodes, allowing you to freeze previews and manage multiple reference images independently.
   - Import generation results back to layers or document masks with one click, fitting perfectly into your professional retouching workflow.
-- **Minimalist UI**: Simple, intuitive parameter panels optimized for Photoshop users.
+- **Minimalist & Refined UI**: Consistent, high-quality icons and a streamlined parameter panel optimized for Photoshop users.
 
 ### 🛠️ Installation
 
@@ -38,21 +39,22 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
 
 ## 中文 - 使用说明
 
-PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通过集成 BizyAir 的高性能云端节点服务，它让您能够在不消耗本地 GPU 资源的前提下，直接在 PS 画布上释放 AI 生成的无限潜力。
+PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通过集成 BizyAir.cn 的高性能云端节点服务，它让您能够在不消耗本地 GPU 资源的前提下，直接在 PS 画布上释放 AI 生成的无限潜力。
 
 ### 🌟 核心功能
 
 - **BizyAir 云端加速**：
-  - 完美对接 BizyAir 高性能模型群，免去本地环境配置的烦恼，实现低延迟、高画质的 AI 运算。
+  - 完美对接 BizyAir.cn 高性能模型群，免去本地环境配置的烦恼，实现低延迟、高画质的 AI 运算。
 - **智能账号与 App 管理**：
   - **多账号支持**：支持保存与一键切换多个 API 账号，轻松管理不同配额。
   - **私人 App 自动同步**：登录后自动获取您的所有私有工作流（Private Apps），即开即用。
-  - **社区 App 发现**：只需手动输入社区 App ID，即可将公开的高质量工作流添加至您的控制面板。
+  - **社区 App 发现**：只需手动输入社区 App ID，即可将公开的高质量工作流添加至您的控制面板。(https://bizyair.cn/community?path=app)
 - **深度画布联动**：
-  - 支持将 PS 选区或活动图层实时转换为 AI 工作流输入。
-  - 生成结果支持一键置入图层、自动创建遮罩，完美嵌入您的专业修图流程。
-- **极简操作界面**：
-  - 针对 PS 习惯优化的简洁参数面板，让 AI 调优变得直观、高效。
+  - **实时同步**：自动感应 Photoshop 内部的图层显隐、切换、移动及变形操作，实现无缝预览。
+  - **预览锁定**：LoadImage 节点支持“锁定”功能，您可以冻结特定节点的图像内容，方便多节点协同工作。
+  - 支持将 PS 选区或活动图层实时转换为 AI 工作流输入，并将生成结果一键置入图层。
+- **精致操作界面**：
+  - 全新优化的矢量图标系统与简洁参数面板，让 AI 调优变得直观、优雅。
 
 ### 🛠️ 安装方式
 

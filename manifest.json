@@ -1,7 +1,7 @@
 {
     "id": "PS_BizyAir_App",
     "name": "PS_BizyAir_App",
-    "version": "1.0.0",
+    "version": "1.1.2",
     "main": "index.html",
     "manifestVersion": 5,
     "host": {
@@ -71,23 +71,7 @@
                 {
                     "width": 24,
                     "height": 24,
-                    "path": "icons/icon.png",
-                    "scale": [
-                        1,
-                        2
-                    ],
-                    "theme": [
-                        "darkest",
-                        "dark",
-                        "medium",
-                        "lightest",
-                        "light"
-                    ]
-                },
-                {
-                    "width": 32,
-                    "height": 32,
-                    "path": "icons/icon.png",
+                    "path": "icons/icon-24.png",
                     "scale": [
                         1,
                         2
@@ -103,7 +87,7 @@
                 {
                     "width": 48,
                     "height": 48,
-                    "path": "icons/icon.png",
+                    "path": "icons/icon-48.png",
                     "scale": [
                         1,
                         2
@@ -121,9 +105,28 @@
     ],
     "icons": [
         {
+            "width": 24,
+            "height": 24,
+            "path": "icons/icon-24.png",
+            "scale": [
+                1,
+                2
+            ],
+            "theme": [
+                "darkest",
+                "dark",
+                "medium",
+                "lightest",
+                "light"
+            ],
+            "species": [
+                "pluginList"
+            ]
+        },
+        {
             "width": 48,
             "height": 48,
-            "path": "icons/icon.png",
+            "path": "icons/icon-48.png",
             "scale": [
                 1,
                 2

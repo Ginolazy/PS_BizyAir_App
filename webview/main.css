@@ -1,4 +1,4 @@
-/* BizyAir Photoshop Plugin - Main Styles (V36 Full Specification) */
+/* BizyAir Photoshop Plugin - Main Styles (V1.1.0) */
 
 .m-0 {
     margin: 0 !important;
@@ -67,7 +67,7 @@ body {
     min-height: 100vh;
 }
 
-/* 顶部导航与品牌 */
+/* Header and Brand */
 .header {
     display: flex;
     align-items: center;
@@ -131,12 +131,12 @@ svg.icon-tw-20 {
     vertical-align: middle;
 }
 
-/* 顶部内容 */
+/* Top Navigation Bar */
 .top-nav-bar {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    /* 改为左对齐，确保在极窄面板下依然可见 */
+    /* Left aligned for narrow panels */
     padding-bottom: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
 }
@@ -162,7 +162,7 @@ svg.icon-tw-20 {
     color: white;
 }
 
-/* 区域顶部导航 (V75.69) */
+/* Section Header */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -223,7 +223,7 @@ svg.icon-tw-20 {
     margin-left: 6px;
 }
 
-/* --- 通用组件 (V90 系统化重构) --- */
+/* --- Common Components (V90) --- */
 
 .list-item {
     display: flex;
@@ -271,7 +271,7 @@ svg.icon-tw-20 {
     margin-left: 8px;
 }
 
-/* 2. 表单与控件 */
+/* 2. Forms and Controls */
 #appManageTitle {
     padding: 6px 0;
     border-top: 1px solid var(--border-color);
@@ -326,7 +326,7 @@ svg.icon-tw-20 {
     cursor: not-allowed;
 }
 
-/* 3. 图标按钮变体 */
+/* 3. Icon Button Variants */
 .icon-btn {
     background: transparent;
     border: none;
@@ -350,7 +350,7 @@ svg.icon-tw-20 {
     background: rgba(244, 67, 54, 0.1);
 }
 
-/* 表单逻辑 */
+/* Form Logic */
 .form-group {
     margin-bottom: var(--spacing-md);
 }
@@ -378,7 +378,7 @@ input:focus {
     border-color: var(--accent-primary);
 }
 
-/* 模式选择 (V36 补全) */
+/* Mode Selection (V36) */
 .mode-selection.card {
     padding: var(--spacing-md);
 }
@@ -424,7 +424,7 @@ input:focus {
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* 让出底部 footer 空间 */
+    /* Container for footer space */
     overflow: hidden;
 }
 
@@ -498,7 +498,7 @@ input:focus {
     background: var(--bg-secondary);
 }
 
-/* 设置页 */
+/* Settings Page */
 .add-app-form {
     display: flex;
     gap: 4px;
@@ -516,7 +516,7 @@ input:focus {
     overflow-y: auto;
 }
 
-/* [CLEANUP] 弃用的 .account-item 样式已由 .list-item 替代 */
+/* [CLEANUP] Deprecated .account-item style replaced by .list-item */
 
 .apps-grid {
     display: flex;
@@ -524,7 +524,7 @@ input:focus {
     gap: 4px;
 }
 
-/* 结果弹窗 */
+/* Result Modal */
 .result-sticky-section {
     position: fixed;
     top: 50%;
@@ -568,7 +568,7 @@ input:focus {
     padding: 12px;
 }
 
-/* 底部按钮 */
+/* Footer Buttons */
 .footer {
     position: fixed;
     bottom: 0;
@@ -664,32 +664,32 @@ input:focus {
     color: var(--text-tertiary);
 }
 
-.log-drawer .chevron-icon {
+.log-drawer .icon-tw-12 {
     transform: rotate(0deg);
-    /* 折叠时默认向上 */
+    /* Rotated when expanded */
     transition: transform 0.3s ease;
 }
 
-.log-drawer.collapsed .chevron-icon {
+.log-drawer.expanded .icon-tw-12 {
     transform: rotate(180deg);
 }
 
-.log-drawer:not(.collapsed) .chevron-icon {
+.log-drawer:not(.expanded) .icon-tw-12 {
     transform: rotate(0deg);
-    /* 展开时向下指 */
+    /* Points down when expanded */
 }
 
 .log-content-wrapper,
 .log-content {
     max-height: 30px;
-    /* 用户自定义的展开限制 */
+    /* User expansion limit */
     overflow-y: auto;
     transition: all 0.3s ease;
     display: block;
 }
 
-.log-drawer.collapsed .log-content-wrapper,
-.log-drawer.collapsed .log-content {
+.log-drawer.expanded .log-content-wrapper,
+.log-drawer.expanded .log-content {
     max-height: 300px !important;
 }
 
@@ -715,14 +715,14 @@ input:focus {
 .footer-progress .progress-bar-bg {
     height: 3px;
     background: rgba(0, 0, 0, 0.3);
-    /* 深色背景增强对比 */
+    /* Darker background for contrast */
     border-radius: 0;
 }
 
 .footer-progress .progress-bar-fill {
     height: 100%;
     background: #0078d4;
-    /* 强制使用高亮蓝色 */
+    /* Highlight blue */
     border-radius: 0;
     box-shadow: 0 0 10px rgba(0, 120, 212, 0.8);
     transition: width 0.3s ease;
@@ -744,7 +744,7 @@ input:focus {
     opacity: 0.3;
 }
 
-/* [V90] 已合并至 .list-item 操作区 */
+/* [V90] Merged into .list-item action area */
 .app-item svg {
     margin-right: 3px;
 }
@@ -880,7 +880,7 @@ select.app-param-input {
     padding-right: 24px;
 }
 
-/* [V75.92] 参数分组与双栏布局 */
+/* [V75.92] Parameter Grouping and Dual Column Layout */
 .node-group {
     margin-bottom: 12px;
 }
@@ -919,12 +919,12 @@ select.app-param-input {
     margin-bottom: 0;
 }
 
-/* 标签占50%，左对齐，带一点padding */
+/* Labels occupy 50%, left aligned */
 .param-label {
     flex: 0 0 50%;
     width: 50%;
     text-align: left;
-    /* [V75.93] 标签左对齐 */
+    /* [V75.93] Label left aligned */
     font-size: 12px;
     color: var(--text-secondary);
     padding-right: 10px;
@@ -940,20 +940,20 @@ select.app-param-input {
     white-space: normal;
 }
 
-/* 输入控件占50%，内容右对齐 */
+/* Input controls occupy 50%, right aligned */
 .param-input-wrapper {
     flex: 0 0 50%;
     width: 50%;
     display: flex;
     justify-content: flex-end;
-    /* [V75.93] 控件靠右 */
+    /* [V75.93] Controls right-aligned */
 }
 
 /* Toggle Alignment Optimization */
 .param-input-wrapper.toggle-wrapper {
     display: flex;
     justify-content: flex-end;
-    /* [V75.93] 开关也靠右 */
+    /* [V75.93] Toggles right-aligned */
 }
 
 /* Progress Bar Styles */
@@ -989,7 +989,7 @@ select.app-param-input {
     color: #ff9800;
 }
 
-/* 结果预览框样式（新位置：顶部） */
+/* Result Preview (New Position: Top) */
 .result-preview-area {
     background: #1a1a1a;
     margin-bottom: 12px;
@@ -1002,6 +1002,46 @@ select.app-param-input {
     justify-content: center;
     align-items: center;
     height: 180px;
+}
+
+.preview-lock-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 40;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.6;
+}
+
+.preview-lock-btn:hover {
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.preview-lock-btn.locked {
+    background: var(--primary-color, #00a0ff);
+    color: #fff;
+    border-color: transparent;
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(0, 160, 255, 0.4);
+}
+
+.preview-lock-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 .result-placeholder {
@@ -1089,7 +1129,7 @@ select.app-param-input {
     opacity: 0.9;
 }
 
-/* LoadImage 预览框样式 */
+/* LoadImage Preview Box */
 .load-image-preview-box {
     margin-bottom: 12px;
 }
@@ -1214,6 +1254,38 @@ select.app-param-input {
     color: white;
 }
 
+/* SVG ICON SYSTEM */
+.icon-tw-10 {
+    width: 10px;
+    height: 10px;
+}
+
+.icon-tw-12 {
+    width: 12px;
+    height: 12px;
+}
+
+.icon-tw-14 {
+    width: 14px;
+    height: 14px;
+}
+
+.icon-tw-16 {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-tw-18 {
+    width: 18px;
+    height: 18px;
+}
+
+.icon-tw-20 {
+    width: 20px;
+    height: 20px;
+}
+
+/* UTILS */
 /* App Classification UI */
 .card-header-row {
     display: flex;
@@ -1339,7 +1411,7 @@ select.app-param-input {
     margin-left: 6px;
 }
 
-/* [V90] 已合并至 .list-item 或通用组件 */
+/* [V90] Merged into .list-item or common components */
 
 /* Inline Account Form Style (Mirroring Add App Form) */
 .add-app-form,
