@@ -193,7 +193,7 @@
                     // 1.5 Load Default Apps from Bundle (New)
                     try {
                         const pf = await fs.getPluginFolder();
-                        const pubEntry = await pf.getEntry('webview/public_apps.json');
+                        const pubEntry = await pf.getEntry('webview/default_apps.json');
                         if (pubEntry) {
                             const pubRaw = await pubEntry.read();
                             if (pubRaw) {

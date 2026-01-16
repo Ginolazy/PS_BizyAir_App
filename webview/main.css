@@ -1177,7 +1177,7 @@ select.app-param-input {
     border: 1px solid var(--border-color);
 }
 
-.preview-image-container img {
+.preview-image-container .preview-img {
     border: 1px solid rgb(55, 55, 55);
     max-width: 100%;
     max-height: 100%;
