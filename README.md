@@ -23,7 +23,7 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
   - **Preview Lock**: Added a "Lock" button to LoadImage nodes, allowing you to freeze previews and manage multiple reference images independently.
   - Import generation results back to layers or document masks with one click, fitting perfectly into your professional retouching workflow.
 - **Minimalist & Refined UI**: Consistent, high-quality icons and a streamlined parameter panel optimized for Photoshop users.
-- **Improved Compatibility**: Extended support for Photoshop 2023 and 2024, with optimized polling logic for ultra-long tasks.
+- **Improved Compatibility**: Extended support for Photoshop 2024, with optimized polling logic for ultra-long tasks.
 
 ### 💻 System Requirements
 
@@ -63,7 +63,7 @@ PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通
   - 支持将 PS 选区或活动图层实时转换为 AI 工作流输入，并将生成结果一键置入图层。
 - **精致操作界面**：
   - 全新优化的矢量图标系统与简洁参数面板，让 AI 调优变得直观、优雅。
-- **更强的兼容性**：扩展支持 Photoshop 2023 与 2024 版本，优化了超长任务的轮询稳定性。
+- **更强的兼容性**：扩展支持 2024 版本，优化了超长任务的轮询稳定性。
 
 ### 💻 系统要求
 
