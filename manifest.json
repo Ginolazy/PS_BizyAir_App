@@ -1,12 +1,12 @@
 {
     "id": "PS_BizyAir_App",
     "name": "PS_BizyAir_App",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "main": "index.html",
     "manifestVersion": 5,
     "host": {
         "app": "PS",
-        "minVersion": "25.0.0"
+        "minVersion": "24.0.0"
     },
     "featureFlags": {
         "enableAlerts": true,
@@ -35,7 +35,7 @@
             "allow": "yes",
             "allowLocalRendering": "yes",
             "domains": "all",
-            "enableMessageBridge": "localAndRemote"
+            "enableMessageBridge": true
         },
         "photoshop": {
             "allowOpen": true,

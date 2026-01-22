@@ -78,22 +78,17 @@
         (function () {
             const webview = document.getElementById('biz_wv');
             const splash = document.getElementById('splash');
-            const STORAGE_FILE = 'bizyair_core_v64.json';
+            const STORAGE_FILE = 'bizyair_v1.json'; // New name, new start
             const uxp = require('uxp');
             const fs = uxp.storage.localFileSystem;
-            let _cache = { bizyair_apiKey: '', bizyair_accounts: [], bizyair_apps_v2: [], bizyair_apps_v2_private: [], bizyair_public_apps: [] };
+            let _cache = {}; // Start empty
 
             const hideSplash = () => {
                 if (splash && splash.style.display !== 'none') {
                     splash.style.display = 'none';
                     webview.classList.add('ready');
-                    console.log("BizyAir: Boot Complete");
                 }
             };
-
-            // Double security for hiding splash
-            webview.addEventListener('loadstop', hideSplash);
-            setTimeout(hideSplash, 10000); // Wait longer for complex setups
 
             const processSignal = async (raw) => {
                 if (!raw) return;
@@ -104,10 +99,8 @@
                         let jsonPart = decodeURIComponent(raw.split('#SAVE:')[1]);
                         const lastBracket = jsonPart.lastIndexOf('}');
                         if (lastBracket !== -1) jsonPart = jsonPart.substring(0, lastBracket + 1);
-                        const data = JSON.parse(jsonPart);
+                        _cache = JSON.parse(jsonPart);
 
-                        _cache = { ..._cache, ...data };
-                        localStorage.setItem('bizyair_v75_ls', JSON.stringify(_cache));
                         const df = await fs.getDataFolder();
                         const file = await df.createFile(STORAGE_FILE, { overwrite: true });
                         await file.write(JSON.stringify(_cache));
@@ -179,15 +172,11 @@
             async function init() {
                 // 1. Load Data FIRST
                 try {
-                    const ls = localStorage.getItem('bizyair_v75_ls');
-                    if (ls) _cache = JSON.parse(ls);
-                    else {
-                        const df = await fs.getDataFolder();
-                        const entry = await df.getEntry(STORAGE_FILE);
-                        if (entry) {
-                            const raw = await entry.read();
-                            if (raw) _cache = JSON.parse(raw);
-                        }
+                    const df = await fs.getDataFolder();
+                    const entry = await df.getEntry(STORAGE_FILE);
+                    if (entry) {
+                        const raw = await entry.read();
+                        if (raw) _cache = JSON.parse(raw);
                     }
 
                     // 1.5 Load Default Apps from Bundle (New)
@@ -198,13 +187,12 @@
                             const pubRaw = await pubEntry.read();
                             if (pubRaw) {
                                 const pubData = JSON.parse(pubRaw);
-                                _cache.bizyair_bundle_defaults = pubData.default_apps || [];
-                                console.log("BizyAir: Loaded Bundle Defaults", _cache.bizyair_bundle_defaults);
+                                _cache.bizyair_defaults_appList = pubData.default_apps || [];
                             }
                         }
-                    } catch (e) { console.warn("Bundle Defaults load skipped:", e); }
+                    } catch (e) { }
 
-                } catch (e) { console.warn("Init load failed:", e); }
+                } catch (e) { }
 
                 // 2. Point to UI (CLEAN URL - No hash to prevent Windows load hangs)
                 webview.src = `webview/ui.html`;

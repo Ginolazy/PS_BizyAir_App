@@ -283,7 +283,18 @@ function startSelectionListener(callback) {
 async function listHistoryFiles() {
     try {
         const tempFolder = await fs.getTemporaryFolder(), entries = await tempFolder.getEntries();
-        const files = entries.filter(e => e.isFile && (e.name.startsWith('dl_') || e.name.startsWith('sdk_'))).map(e => 'file://' + e.nativePath);
+        // 扫描策略：
+        // 1. 以 dl_ 开头的 (下载的临时文件)
+        // 2. 以 sdk_ 开头的 (SDK 内部使用的)
+        // 3. 包含 _result_ 的 (BizyAir 结果图)
+        const files = entries
+            .filter(e => e.isFile && (
+                e.name.startsWith('dl_') ||
+                e.name.startsWith('sdk_') ||
+                e.name.includes('_result_')
+            ))
+            .sort((a, b) => b.modDate - a.modDate) // 按时间倒序
+            .map(e => 'file://' + e.nativePath);
         return { success: true, files };
     } catch (e) { return { success: false, error: e.message }; }
 }
@@ -306,8 +317,19 @@ async function deleteFile(path) {
 async function clearHistoryFiles() {
     try {
         const temp = await fs.getTemporaryFolder(), entries = await temp.getEntries();
-        for (const e of entries) { if (e.isFile && (e.name.includes('_image') || e.name.includes('_mask'))) await e.delete(); }
-        return { success: true };
+        let count = 0;
+        for (const e of entries) {
+            if (e.isFile && (
+                e.name.includes('_image') ||
+                e.name.includes('_mask') ||
+                e.name.includes('_result_') ||
+                e.name.startsWith('dl_')
+            )) {
+                await e.delete();
+                count++;
+            }
+        }
+        return { success: true, count };
     } catch (e) { return { success: false, error: e.message }; }
 }
 
