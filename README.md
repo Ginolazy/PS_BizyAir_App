@@ -27,7 +27,7 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
 
 ### 💻 System Requirements
 
-- **Photoshop Version**: Adobe Photoshop 2023 (v24.0) or higher.
+- **Photoshop Version**: Adobe Photoshop 2024 (v25.0) or higher.
 - **Account**: A valid [BizyAir.cn](https://bizyair.cn) API Key.
 
 ### 🛠️ Installation
@@ -67,7 +67,7 @@ PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通
 
 ### 💻 系统要求
 
-- **Photoshop 版本**：Adobe Photoshop 2023 (v24.0) 或更高版本。
+- **Photoshop 版本**：Adobe Photoshop 2024 (v25.0) 或更高版本。
 - **账号要求**：有效的 [BizyAir.cn](https://bizyair.cn) API Key。
 
 ### 🛠️ 安装方式

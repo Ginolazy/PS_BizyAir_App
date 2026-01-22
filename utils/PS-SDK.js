@@ -62,6 +62,7 @@ async function saveBufferToTemp(buffer, nodeId, suffix, appId) {
 async function getActiveDocumentImage(options = {}) {
     const { baseMode = 'canvas', nodeId, appId } = options;
     if (!app.activeDocument) return { success: false, error: 'No active document' };
+    if (!imaging || !imaging.getPixels) return { success: false, error: 'Photoshop Imaging API not available in this version' };
     isProcessing = true;
     try {
         const doc = app.activeDocument;
@@ -181,7 +182,10 @@ async function getActiveDocumentImage(options = {}) {
         }, { "commandName": "SDK: Image Acquisition" });
 
         return { success: true, image: imagePath ? 'file://' + imagePath : null, mask: maskPath ? 'file://' + maskPath : null, rgba: rgbaPath ? 'file://' + rgbaPath : null, width: resultW, height: resultH, isLocal: true };
-    } catch (e) { return { success: false, error: e.message }; } finally { isProcessing = false; }
+    } catch (e) {
+        console.error("SDK Error Details:", e);
+        return { success: false, error: `Execution error: ${e.message || 'Unknown error'}` };
+    } finally { isProcessing = false; }
 }
 
 // ============================================================================
