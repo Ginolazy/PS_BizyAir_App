@@ -68,6 +68,9 @@
                 readBinaryFile: (path) => callHost('photoshop:call', 'readBinaryFile', path),
                 downloadUrlToTemp: (url, prefix) => callHost('photoshop:call', 'downloadUrlToTemp', url, prefix),
                 deleteFile: (path) => callHost('photoshop:call', 'deleteFile', path),
+                pickFolder: () => callHost('photoshop:call', 'pickFolder'),
+                listFiles: (token) => callHost('photoshop:call', 'listFiles', token),
+                loadFileByPath: (token, name) => callHost('photoshop:call', 'loadFileByPath', token, name),
                 clearHistoryFiles: () => callHost('photoshop:call', 'clearHistoryFiles')
             };
         })();
@@ -96,10 +99,12 @@
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </symbol>
         <symbol id="icon-history" viewBox="0 0 24 24">
-            <path d="M12 8v4l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" />
-            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" fill="none" stroke="currentColor" stroke-width="2"
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 3v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <path d="M12 7v5l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
         </symbol>
         <symbol id="icon-grid" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"
@@ -190,6 +195,13 @@
                 d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </symbol>
+
+        <symbol id="icon-crop" viewBox="0 0 24 24">
+            <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
     </svg>
 
     <div class="app-container">
@@ -226,6 +238,15 @@
             </div>
 
             <div id="manageAccountsList"></div>
+
+            <div class="card mt-10">
+                <div class="section-subtitle">Default Load Location</div>
+                <div class="inline-form">
+                    <input type="text" id="defaultLoadPath" class="input-control" placeholder="No folder selected...">
+                    <button class="action-btn secondary" id="selectFolderBtn"
+                        title="Select default images folder">Browse</button>
+                </div>
+            </div>
 
             <div class="card-header-row mt-10">
                 <h3 class="m-0">App Management</h3>
@@ -286,91 +307,88 @@
                     </svg>
                 </button>
             </div>
+            <!-- Result Preview with Carousel -->
+            <div id="resultStickySection" class="result-preview-area card d-none" style="display: none;">
+                <div class="result-image-container">
+                    <button class="icon-btn pos-absolute-top-right z-10" id="closePreviewBtn">
+                        <svg class="icon-tw-14">
+                            <use xlink:href="#icon-x" />
+                        </svg>
+                    </button>
 
-            <div class="execution-content-scroll">
-                <!-- Result Preview with Carousel -->
-                <div id="resultStickySection" class="result-preview-area card d-none" style="display: none;">
-                    <div class="result-image-container">
-                        <button class="icon-btn pos-absolute-top-right z-10" id="closePreviewBtn">
-                            <svg class="icon-tw-14">
-                                <use xlink:href="#icon-x" />
-                            </svg>
-                        </button>
+                    <!-- Navigation Buttons -->
+                    <button class="carousel-nav prev" id="prevResultBtn">
+                        <svg class="icon-tw-20">
+                            <use xlink:href="#icon-prev" />
+                        </svg>
+                    </button>
 
-                        <!-- Navigation Buttons -->
-                        <button class="carousel-nav prev" id="prevResultBtn">
-                            <svg class="icon-tw-20">
-                                <use xlink:href="#icon-prev" />
-                            </svg>
-                        </button>
+                    <img id="resultPreviewImg" src="" />
 
-                        <img id="resultPreviewImg" src="" />
+                    <button class="carousel-nav next" id="nextResultBtn">
+                        <svg class="icon-tw-20">
+                            <use xlink:href="#icon-next" />
+                        </svg>
+                    </button>
 
-                        <button class="carousel-nav next" id="nextResultBtn">
-                            <svg class="icon-tw-20">
-                                <use xlink:href="#icon-next" />
-                            </svg>
-                        </button>
-
-                        <!-- Page Indicator -->
-                        <div class="carousel-indicator" id="carouselIndicator">1 / 1</div>
-                        <div class="result-placeholder">Result</div>
-                        <div class="result-actions-floating">
-                            <div class="result-button-bridge">
-                                <button class="control-btn" id="applyResultBtn" title="Apply to layer">
-                                    <svg class="icon-tw-12">
-                                        <use xlink:href="#icon-apply-layer" />
-                                    </svg>
-                                    Apply to Layer
-                                </button>
-                                <button class="control-btn" id="createDocBtn" title="New document">
-                                    <svg class="icon-tw-12">
-                                        <use xlink:href="#icon-new-doc" />
-                                    </svg>
-                                    New Document
-                                </button>
-                            </div>
+                    <!-- Page Indicator -->
+                    <div class="carousel-indicator" id="carouselIndicator">1 / 1</div>
+                    <div class="result-placeholder">Result</div>
+                    <div class="result-actions-floating">
+                        <div class="result-button-bridge">
+                            <button class="control-btn" id="applyResultBtn"
+                                title="Fit to Selection, else fit to Canvas, 'Shift + Apply' center">
+                                <svg class="icon-tw-12">
+                                    <use xlink:href="#icon-apply-layer" />
+                                </svg>
+                                Apply to Layer
+                            </button>
+                            <button class="control-btn" id="createDocBtn" title="New document">
+                                <svg class="icon-tw-12">
+                                    <use xlink:href="#icon-new-doc" />
+                                </svg>
+                                New Document
+                            </button>
                         </div>
                     </div>
                 </div>
-
+            </div>
+            <div class="execution-content-scroll">
                 <div class="params-container card">
                     <div id="appParamsContent"></div>
                 </div>
             </div>
-
-            <!-- Progress & Logs -->
-
-            <footer class="footer execution-footer">
-                <div class="log-drawer" id="logDrawer">
-                    <div class="log-content-wrapper">
-                        <div class="log-content" id="logContent"></div>
-                    </div>
-                    <div class="log-drawer-header" id="logDrawerHeader" title="Click to toggle logs">
-                        <button class="icon-btn mr-8" id="clearLogsBtn" title="Clear Logs">
-                            <svg class="icon-tw-14">
-                                <use xlink:href="#icon-trash" />
-                            </svg>
-                        </button>
-                        <div id="logDrawerChevron">
-                            <svg class="icon-tw-12">
-                                <use xlink:href="#icon-up" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-actions">
-                    <button class="run-btn primary" id="runBtn">Generate Now</button>
-                    <button class="stop-btn secondary d-none" id="stopBtn" title="Stop Task" style="display: none;">
-                        <svg class="icon-tw-18">
-                            <use xlink:href="#icon-stop" />
-                        </svg>
-                    </button>
-                </div>
-            </footer>
         </section>
-
     </div>
+
+    <!-- Progress & Logs -->
+    <footer class="footer execution-footer">
+        <div class="log-drawer" id="logDrawer">
+            <div class="log-content-wrapper">
+                <div class="log-content" id="logContent"></div>
+            </div>
+            <div class="log-drawer-header" id="logDrawerHeader" title="Click to toggle logs">
+                <button class="icon-btn mr-8" id="clearLogsBtn" title="Clear Logs">
+                    <svg class="icon-tw-14">
+                        <use xlink:href="#icon-trash" />
+                    </svg>
+                </button>
+                <div id="logDrawerChevron">
+                    <svg class="icon-tw-12">
+                        <use xlink:href="#icon-up" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="footer-actions">
+            <button class="run-btn primary" id="runBtn">Generate Now</button>
+            <button class="stop-btn secondary d-none" id="stopBtn" title="Stop Task" style="display: none;">
+                <svg class="icon-tw-18">
+                    <use xlink:href="#icon-stop" />
+                </svg>
+            </button>
+        </div>
+    </footer>
     <script src="js/api.js"></script>
     <script src="js/logic.js"></script>
 </body>

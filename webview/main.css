@@ -1,4 +1,4 @@
-/* BizyAir Photoshop Plugin - Main Styles (V1.1.0) */
+/* BizyAir Photoshop Plugin - Main Styles */
 
 .m-0 {
     margin: 0 !important;
@@ -61,10 +61,39 @@ body {
     line-height: 1.4;
 }
 
+/* --- Global Scrollbar Styling (Minimalist Dark) --- */
+::-webkit-scrollbar {
+    width: 3px;
+    /* Narrower width */
+    height: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox support */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
 .app-container {
-    padding: var(--spacing-sm);
-    padding-bottom: 100px;
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 105px);
+    padding-bottom: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 /* Header and Brand */
@@ -72,8 +101,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--border-color);
+    padding: 4px 8px;
 }
 
 .brand {
@@ -92,6 +121,12 @@ body {
     font-size: 16px;
     font-weight: 700;
     color: var(--accent-primary);
+}
+
+.current-info {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text-secondary);
 }
 
 /* SVG Icon System Utilities */
@@ -180,6 +215,7 @@ svg.icon-tw-20 {
     display: flex;
     align-items: center;
     gap: 6px;
+    justify-content: space-between;
 }
 
 .section-header h5 {
@@ -223,7 +259,16 @@ svg.icon-tw-20 {
     margin-left: 6px;
 }
 
-/* --- Common Components (V90) --- */
+/* --- Common Components --- */
+
+@media (min-width: 320px) {
+
+    #appParamsContent {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
 
 .list-item {
     display: flex;
@@ -331,13 +376,12 @@ svg.icon-tw-20 {
 .icon-btn {
     background: transparent;
     border: none;
-    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-muted);
     cursor: pointer;
-    border-radius: var(--radius-sm);
+    border-radius: 50%;
     transition: all var(--transition-fast);
 }
 
@@ -366,7 +410,7 @@ svg.icon-tw-20 {
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    height: 32px;
+    height: 28px;
     padding: 0 8px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
@@ -421,19 +465,30 @@ input:focus {
     padding-top: var(--spacing-sm);
 }
 
+.account-section,
+.app-list-section,
 .execution-section {
-    display: flex;
+    flex: 1;
+    display: none;
+    /* Default state, toggled by logic.js */
     flex-direction: column;
-    height: 100%;
-    /* Container for footer space */
+    min-height: 0;
+    /* Important for flex child scrolling */
     overflow: hidden;
 }
 
+.app-list-section {
+    padding: var(--spacing-sm);
+}
+
 .execution-section .section-header {
+    padding: 4px 8px;
     margin-bottom: unset
 }
 
 .execution-content-scroll {
+    border-top: 1px dashed #404040;
+    padding: var(--spacing-sm);
     flex: 1;
     overflow-y: auto;
 }
@@ -467,6 +522,45 @@ input:focus {
     position: relative;
     border-radius: 4px;
     overflow: hidden;
+}
+
+.preview-lock-container {
+    flex-direction: column;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    display: flex;
+    gap: 4px;
+    z-index: 50;
+}
+
+.hover-only {
+    display: none !important;
+}
+
+.preview-image-container:hover .hover-only {
+    display: flex !important;
+}
+
+.preview-lock-btn {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.preview-lock-btn svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
 }
 
 .image-preview img {
@@ -682,6 +776,7 @@ input:focus {
 
 .log-content-wrapper,
 .log-content {
+    width: 100%;
     max-height: 30px;
     /* User expansion limit */
     overflow-y: auto;
@@ -759,13 +854,14 @@ input:focus {
 /* [V75.91] 动态表单组件样式 */
 .app-param-input {
     width: 100%;
-    height: 32px;
+    height: 28px;
     padding: 0 8px;
     background: var(--bg-third);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     color: white;
     font-size: 12px;
+    font-weight: 300;
 }
 
 textarea.app-param-input {
@@ -784,7 +880,7 @@ textarea.app-param-input {
     background: var(--bg-third);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    height: 32px;
+    height: 28px;
     overflow: hidden;
 }
 
@@ -812,7 +908,7 @@ textarea.app-param-input {
     justify-content: center;
     background: rgba(255, 255, 255, 0.05);
     border: none;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -871,14 +967,92 @@ textarea.app-param-input {
 }
 
 /* Select */
-select.app-param-input {
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23b0b0b0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 10px;
-    padding-right: 24px;
+/* Select - Replaced by custom implementation in 16.31 */
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-container.app-param-input {
+    padding: 0;
+}
+
+.custom-select-trigger {
+    width: 100%;
+    height: 100%;
+    padding: 0 24px 0 8px;
+    color: var(--text-primary);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color var(--transition-fast);
+}
+
+.custom-select-trigger:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.custom-select-trigger::after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid var(--text-secondary);
+    transition: transform var(--transition-fast);
+}
+
+.custom-select-container.active .custom-select-trigger::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-select-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: -1px;
+    right: 0;
+    background: var(--bg-third);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    z-index: 6000;
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 4px 0;
+    backdrop-filter: blur(12px);
+    width: calc(100% + 2px);
+}
+
+.custom-select-container.active .custom-select-menu {
+    display: block;
+}
+
+.custom-select-item {
+    padding: 6px 10px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all var(--transition-fast);
+}
+
+.custom-select-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.custom-select-item.selected {
+    background: var(--accent-active);
+    color: var(--accent-primary);
 }
 
 /* [V75.92] Parameter Grouping and Dual Column Layout */
@@ -888,7 +1062,6 @@ select.app-param-input {
 
 .node-title {
     font-size: 12px;
-    font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 8px;
     padding-left: 3px;
@@ -899,7 +1072,7 @@ select.app-param-input {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .param-row.full-width {
@@ -928,7 +1101,7 @@ select.app-param-input {
     /* [V75.93] Label left aligned */
     font-size: 12px;
     color: var(--text-secondary);
-    padding-right: 10px;
+    padding: 4px;
     /* 文本溢出处理 */
     overflow: hidden;
     text-overflow: ellipsis;
@@ -993,8 +1166,7 @@ select.app-param-input {
 /* Result Preview (New Position: Top) */
 .result-preview-area {
     background: #1a1a1a;
-    margin-bottom: 12px;
-    overflow: hidden;
+    margin-bottom: 8px;
 }
 
 .result-image-container {
@@ -1006,7 +1178,7 @@ select.app-param-input {
 }
 
 .preview-lock-btn {
-    position: absolute;
+    /* position: absolute; */
     top: 8px;
     left: 8px;
     width: 28px;
@@ -1134,6 +1306,61 @@ select.app-param-input {
 /* LoadImage Preview Box */
 .load-image-preview-box {
     margin-bottom: 12px;
+    position: relative;
+}
+
+/* --- Dropdown Menu System --- */
+.dropdown-menu {
+    position: absolute;
+    /* Base positioning relative to bottom of box */
+    top: 140px;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    min-width: 170px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 5000;
+    display: none;
+    padding: 4px 0;
+    backdrop-filter: blur(12px);
+}
+
+.dropdown-menu.active {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 5px 10px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.dropdown-item.divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 4px 0;
+    padding: 0;
+    cursor: default;
+}
+
+.dropdown-item.muted {
+    opacity: 0.5;
+    font-style: italic;
+    cursor: default;
+    background: transparent !important;
 }
 
 .preview-box-header {
@@ -1232,7 +1459,7 @@ select.app-param-input {
     align-items: center;
     background: rgba(0, 0, 0, 0.6);
     border: none;
-    padding: 4px 8px;
+    padding: 4px 10px;
     font-size: 10px;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
@@ -1413,7 +1640,6 @@ select.app-param-input {
     margin-left: 6px;
 }
 
-/* [V90] Merged into .list-item or common components */
 
 /* Inline Account Form Style (Mirroring Add App Form) */
 .add-app-form,
