@@ -24,6 +24,12 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
   - Import generation results back to layers or document masks with one click, fitting perfectly into your professional retouching workflow.
 - **Minimalist & Refined UI**: Consistent, high-quality icons and a streamlined parameter panel optimized for Photoshop users.
 - **Improved Compatibility**: Extended support for Photoshop 2024, with optimized polling logic for ultra-long tasks.
+- **What's New (v1.1.6)**: 
+  1. Upgraded the selection area as a mask function.
+  2. Added a **Crop mode**, which only sends the content within the selected area.
+  3. Added the function to **insert the result image back into the selection area** (defaults to fitting the selection area when a selection exists), or fitting the canvas when no selection exists. *Shift + Apply to layer* inserts the image centered without stretching.
+  4. Added the **Default Load Location** feature, allowing users to configure a persistent folder for quick image asset loading.
+  5. Fixed the task stopping function.
 
 ### 💻 System Requirements
 
@@ -64,6 +70,12 @@ PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通
 - **精致操作界面**：
   - 全新优化的矢量图标系统与简洁参数面板，让 AI 调优变得直观、优雅。
 - **更强的兼容性**：扩展支持 2024 版本，优化了超长任务的轮询稳定性。
+- **最新更新 (v1.1.6)**：
+  1. 升级选区作为 mask 的功能。
+  2. 新增 **Crop 模式**，仅发送选区内的内容。
+  3. 新增 **结果图插回选区** 功能（有选区时默认适配选区），无选区时适配画布。*Shift + Apply to layer* 为居中插入，无拉伸。
+  4. 新增 **Default Load Location** 路径配置功能，支持配置常用资源目录以便快速加载。
+  5. 修复任务停止功能。
 
 ### 💻 系统要求
 
