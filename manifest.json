@@ -1,7 +1,7 @@
 {
-    "id": "PS_BizyAir_App",
-    "name": "PS_BizyAir_App",
-    "version": "1.1.6",
+    "id": "PS_BizyAir_App_1",
+    "name": "PS_BizyAir_App 1.0",
+    "version": "1.1.7",
     "main": "index.html",
     "manifestVersion": 5,
     "host": {
@@ -49,7 +49,7 @@
             "id": "bizyairPanel",
             "main": "index.html",
             "label": {
-                "default": "PS_BizyAir_App"
+                "default": "PS_BizyAir_App 1.1.7"
             },
             "minimumSize": {
                 "width": 260,
