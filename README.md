@@ -23,8 +23,8 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
   - **Preview Lock**: Added a "Lock" button to LoadImage nodes, allowing you to freeze previews and manage multiple reference images independently.
   - Import generation results back to layers or document masks with one click, fitting perfectly into your professional retouching workflow.
 - **Minimalist & Refined UI**: Consistent, high-quality icons and a streamlined parameter panel optimized for Photoshop users.
-- **Improved Compatibility**: Extended support for Photoshop 2024, with optimized polling logic for ultra-long tasks.
-- **What's New (v1.1.6)**: 
+- **Improved Compatibility**: Extended support for Photoshop 2026, with optimized polling logic for ultra-long tasks.
+- **What's New (v1.1.7)**: 
   1. Upgraded the selection area as a mask function.
   2. Added a **Crop mode**, which only sends the content within the selected area.
   3. Added the function to **insert the result image back into the selection area** (defaults to fitting the selection area when a selection exists), or fitting the canvas when no selection exists. *Shift + Apply to layer* inserts the image centered without stretching.
@@ -33,7 +33,7 @@ PS-BizyAir is a specialized cloud AI collaboration plugin for Adobe Photoshop. B
 
 ### 💻 System Requirements
 
-- **Photoshop Version**: Adobe Photoshop 2024 (v25.0) or higher.
+- **Photoshop Version**: Adobe Photoshop 2025 (v26.0) or higher.
 - **Account**: A valid [BizyAir.cn](https://bizyair.cn) API Key.
 
 ### 🛠️ Installation
@@ -69,8 +69,8 @@ PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通
   - 支持将 PS 选区或活动图层实时转换为 AI 工作流输入，并将生成结果一键置入图层。
 - **精致操作界面**：
   - 全新优化的矢量图标系统与简洁参数面板，让 AI 调优变得直观、优雅。
-- **更强的兼容性**：扩展支持 2024 版本，优化了超长任务的轮询稳定性。
-- **最新更新 (v1.1.6)**：
+- **更强的兼容性**：扩展支持 2025 版本，优化了超长任务的轮询稳定性。
+- **最新更新 (v1.1.7)**：
   1. 升级选区作为 mask 的功能。
   2. 新增 **Crop 模式**，仅发送选区内的内容。
   3. 新增 **结果图插回选区** 功能（有选区时默认适配选区），无选区时适配画布。*Shift + Apply to layer* 为居中插入，无拉伸。
@@ -79,7 +79,7 @@ PS-BizyAir 是一款专为 Adobe Photoshop 打造的云端 AI 协同插件。通
 
 ### 💻 系统要求
 
-- **Photoshop 版本**：Adobe Photoshop 2024 (v25.0) 或更高版本。
+- **Photoshop 版本**：Adobe Photoshop 2025 (v26.0) 或更高版本。
 - **账号要求**：有效的 [BizyAir.cn](https://bizyair.cn) API Key。
 
 ### 🛠️ 安装方式
